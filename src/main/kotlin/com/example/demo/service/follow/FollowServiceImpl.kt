@@ -5,9 +5,11 @@ import com.example.demo.dto.follow.request.FollowUserRequest
 import com.example.demo.dto.follow.request.GetFolloweesRequest
 import com.example.demo.dto.follow.request.GetFollowersRequest
 import com.example.demo.dto.follow.request.UnFollowRequest
+import com.example.demo.dto.follow.request.GetDegreeOfSeparationRequest
 import com.example.demo.dto.follow.response.FollowResponse
 import com.example.demo.dto.follow.response.FollowerDTO
 import com.example.demo.dto.follow.response.FolloweeDTO
+import com.example.demo.dto.follow.response.DegreeOfSeparationResponse
 
 import com.example.demo.repository.follow.FollowRepository
 import org.springframework.stereotype.Service
@@ -47,7 +49,30 @@ class FollowServiceImpl(private val followRepository: FollowRepository) : Follow
 	
 	override fun unFollowUser(request: UnFollowRequest): Boolean {
 		val followingId = request.followingId
-		
+
 		return followRepository.deleteByFollowingId(followingId)
+	}
+
+	override fun getDegreeOfSeparation(request: GetDegreeOfSeparationRequest): DegreeOfSeparationResponse {
+		val fromUserId = request.fromUserId
+		val toUserId = request.toUserId
+
+		// 본인이면 0촌
+		if (fromUserId == toUserId) {
+			return DegreeOfSeparationResponse(
+				fromUserId = fromUserId,
+				toUserId = toUserId,
+				degree = 0
+			)
+		}
+
+		// Repository에서 촌수 계산
+		val degree = followRepository.findDegreeOfSeparation(fromUserId, toUserId) ?: -1
+
+		return DegreeOfSeparationResponse(
+			fromUserId = fromUserId,
+			toUserId = toUserId,
+			degree = degree
+		)
 	}
 }

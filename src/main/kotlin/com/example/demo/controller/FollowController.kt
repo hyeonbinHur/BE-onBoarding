@@ -4,9 +4,11 @@ import com.example.demo.dto.follow.request.FollowUserRequest
 import com.example.demo.dto.follow.request.GetFolloweesRequest
 import com.example.demo.dto.follow.request.GetFollowersRequest
 import com.example.demo.dto.follow.request.UnFollowRequest
+import com.example.demo.dto.follow.request.GetDegreeOfSeparationRequest
 import com.example.demo.dto.follow.response.FollowResponse
 import com.example.demo.dto.follow.response.FolloweeDTO
 import com.example.demo.dto.follow.response.FollowerDTO
+import com.example.demo.dto.follow.response.DegreeOfSeparationResponse
 import com.example.demo.service.follow.FollowService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -49,5 +51,15 @@ class FollowController(private val followService: FollowService) {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	fun unfollowUser(@PathVariable("followingId") id: String): Boolean {
 		return followService.unFollowUser(UnFollowRequest(id))
+	}
+
+	@GetMapping("/degree-of-separation")
+	@ResponseStatus(HttpStatus.OK)
+	fun getDegreeOfSeparation(
+		@RequestParam fromUserId: String,
+		@RequestParam toUserId: String
+	): DegreeOfSeparationResponse {
+		val request = GetDegreeOfSeparationRequest(fromUserId, toUserId)
+		return followService.getDegreeOfSeparation(request)
 	}
 }

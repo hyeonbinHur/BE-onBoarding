@@ -9,5 +9,5 @@ interface FollowRepository {
 	fun findFollowees(followerId: String): List<FolloweeDTO>
 	fun findFollowers(followeeId: String): List<FollowerDTO>
 	fun deleteByFollowingId(followingId: String): Boolean
-	
+	fun findDegreeOfSeparation(fromUserId: String, toUserId: String): Int?
 }

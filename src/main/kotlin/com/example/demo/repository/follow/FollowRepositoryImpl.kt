@@ -97,7 +97,39 @@ class FollowRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : FollowRepos
 			WHERE following_id = ?
 		""".trimIndent()
 		val deleteRows = jdbcTemplate.update(sql, followingId)
-		
+
 		return deleteRows == 1
+	}
+
+	override fun findDegreeOfSeparation(fromUserId: String, toUserId: String): Int? {
+		val sql = """
+			WITH RECURSIVE follow_chain AS (
+				-- Base case: 직접 팔로우 (1촌)
+				SELECT
+					followee_id as user_id,
+					1 as degree
+				FROM follow
+				WHERE follower_id = ?
+
+				UNION ALL
+
+				-- Recursive case: 친구의 친구 (2촌, 3촌)
+				SELECT
+					f.followee_id as user_id,
+					fc.degree + 1 as degree
+				FROM follow f
+				INNER JOIN follow_chain fc ON f.follower_id = fc.user_id
+				WHERE fc.degree < 3
+			)
+			SELECT MIN(degree) as degree
+			FROM follow_chain
+			WHERE user_id = ?
+		""".trimIndent()
+
+		return try {
+			jdbcTemplate.queryForObject(sql, Int::class.java, fromUserId, toUserId)
+		} catch (e: Exception) {
+			null
+		}
 	}
 }
