@@ -37,7 +37,6 @@ class FollowController(private val followService: FollowService) {
 	@GetMapping("/followees")
 	@ResponseStatus(HttpStatus.OK)
 	fun getFollowingList(@RequestParam userId: String): List<FolloweeDTO> {
-		print(GetFolloweesRequest(userId))
 		return followService.getFollowees(GetFolloweesRequest(userId))
 	}
 	
@@ -52,7 +51,7 @@ class FollowController(private val followService: FollowService) {
 	fun unfollowUser(@PathVariable("followingId") id: String): Boolean {
 		return followService.unFollowUser(UnFollowRequest(id))
 	}
-
+	
 	@GetMapping("/degree-of-separation")
 	@ResponseStatus(HttpStatus.OK)
 	fun getDegreeOfSeparation(

@@ -1,11 +1,11 @@
 package com.example.demo.repository.user
 
+import com.example.demo.domain.User
 import org.springframework.stereotype.Repository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.util.UUID
-import User
 
 @Repository
 class UserRepositoryImpl(
@@ -38,11 +38,8 @@ class UserRepositoryImpl(
 	}
 	
 	override fun findById(userId: UUID): User? {
-		val sql = "SELECT * FROM users WHERE user_id = ?"
-		return try {
-			jdbcTemplate.queryForObject(sql, userRowMapper, userId.toString())
-		} catch (error: Exception) {
-			null
-		}
+		val sql = "SELECT * FROM user WHERE user_id = ?"
+		return jdbcTemplate.queryForObject(sql, userRowMapper, userId.toString())
+		
 	}
 }
