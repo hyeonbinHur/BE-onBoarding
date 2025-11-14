@@ -39,21 +39,16 @@ class PostServiceImpl(
 	}
 	
 	override fun getFollowingPosts(userId: String): List<PostResponse> {
-		// 1. FollowService를 사용해서 내가 팔로우하는 사람들 목록 가져오기
 		val followers = followService.getFollowers(GetFollowersRequest(userId))
 		
-		// 2. followee들의 userId 추출
 		val followeeIds = followers.map { it.followerId }
 		
-		// 3. 팔로우하는 사람이 없으면 빈 리스트 반환
 		if (followeeIds.isEmpty()) {
 			return emptyList()
 		}
 		
-		// 4. 해당 작성자들의 게시물 조회
 		val posts = postRepository.findByAuthorIds(followeeIds)
 		
-		// 5. PostResponse로 변환
 		return posts.map { post ->
 			PostResponse(
 				postId = post.postId.toString(),
