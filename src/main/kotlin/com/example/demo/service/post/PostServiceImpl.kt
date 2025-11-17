@@ -4,6 +4,7 @@ import com.example.demo.domain.Post
 import com.example.demo.dto.post.request.CreatePostRequest
 import com.example.demo.dto.follow.request.GetFolloweesRequest
 import com.example.demo.dto.follow.request.GetFollowersRequest
+import com.example.demo.dto.post.request.GetPostRequest
 import com.example.demo.dto.post.response.PostResponse
 import com.example.demo.repository.post.PostRepository
 import com.example.demo.service.follow.FollowService
@@ -59,5 +60,20 @@ class PostServiceImpl(
 				commentCount = post.commentCount,
 			)
 		}
+	}
+	
+	override fun getPost(request: GetPostRequest): PostResponse {
+		val postId = request.postId
+		val post = postRepository.findByPostId(postId)
+			?: throw NoSuchElementException("Post not found with id: $postId")
+		
+		return PostResponse(
+			postId = post.postId.toString(),
+			authorId = post.authorId,
+			title = post.title,
+			createdAt = post.createdAt.toString(),
+			likeCount = post.likeCount,
+			commentCount = post.commentCount,
+		)
 	}
 }

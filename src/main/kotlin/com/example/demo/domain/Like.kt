@@ -1,3 +1,11 @@
 package com.example.demo.domain
 
-data class Like(val id: Long)
+import java.time.LocalDateTime
+import java.util.UUID
+
+data class Like(
+	val likeId: UUID,
+	val postId: String,
+	val userId: String,
+	val createdAt: LocalDateTime = LocalDateTime.now()
+)

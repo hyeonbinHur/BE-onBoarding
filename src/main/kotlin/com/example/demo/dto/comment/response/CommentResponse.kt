@@ -1,3 +1,9 @@
 package com.example.demo.dto.comment.response
 
-class CommentResponse(val comment: String? = null)
+data class CommentResponse(
+	val commentId: String,
+	val postId: String,
+	val userId: String,
+	val content: String,
+	val createdAt: String
+)

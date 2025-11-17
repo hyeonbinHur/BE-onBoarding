@@ -11,5 +11,4 @@ data class Post(
 	val createdAt: LocalDateTime = LocalDateTime.now(),
 	val likeCount: Int,
 	val commentCount: Int,
-	
-	)
+)

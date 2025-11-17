@@ -58,4 +58,40 @@ class PostRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : PostRepositor
 		
 		return jdbcTemplate.query(sql, postRowMapper, *authorIds.toTypedArray())
 	}
+	
+	override fun findByPostId(postId: String): Post? {
+		val sql = """
+			SELECT * FROM post
+			WHERE post_id = ?
+		""".trimIndent()
+
+		return jdbcTemplate.queryForObject(sql, postRowMapper, postId)
+	}
+
+	override fun incrementLikeCount(postId: String): Boolean {
+		val sql = """
+			UPDATE post
+			SET likes_count = likes_count + 1
+			WHERE post_id = ?
+		""".trimIndent()
+		return jdbcTemplate.update(sql, postId) > 0
+	}
+
+	override fun decrementLikeCount(postId: String): Boolean {
+		val sql = """
+			UPDATE post
+			SET likes_count = likes_count - 1
+			WHERE post_id = ? AND likes_count > 0
+		""".trimIndent()
+		return jdbcTemplate.update(sql, postId) > 0
+	}
+
+	override fun incrementCommentCount(postId: String): Boolean {
+		val sql = """
+			UPDATE post
+			SET comments_count = comments_count + 1
+			WHERE post_id = ?
+		""".trimIndent()
+		return jdbcTemplate.update(sql, postId) > 0
+	}
 }

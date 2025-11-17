@@ -51,7 +51,6 @@ class FollowRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : FollowRepos
 			follow.followerId.toString(),
 			follow.followeeId.toString()
 		)
-		
 		return follow
 	}
 	
